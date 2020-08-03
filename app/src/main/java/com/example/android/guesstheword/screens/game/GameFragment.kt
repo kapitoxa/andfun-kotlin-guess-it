@@ -58,6 +58,12 @@ class GameFragment : Fragment() {
         viewModel.word.observe(viewLifecycleOwner, Observer { newWord ->
             binding.wordText.text = newWord
         })
+        viewModel.eventGameFinish.observe(viewLifecycleOwner, Observer { hasFinished ->
+            if (hasFinished) {
+                gameFinished()
+                viewModel.onGameFinishComplete()
+            }
+        })
 
         binding.correctButton.setOnClickListener {
             viewModel.onCorrect()
@@ -65,7 +71,6 @@ class GameFragment : Fragment() {
         binding.skipButton.setOnClickListener {
             viewModel.onSkip()
         }
-
         return binding.root
     }
 
