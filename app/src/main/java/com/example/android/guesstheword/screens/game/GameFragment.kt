@@ -25,6 +25,11 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment.findNavController
 import com.example.android.guesstheword.R
 import com.example.android.guesstheword.databinding.GameFragmentBinding
+import java.util.ArrayList
+
+const val KEY_WORD = "key_word"
+const val KEY_SCORE = "key_score"
+const val KEY_WORD_LIST = "key_word_list"
 
 /**
  * Fragment where the game is played
@@ -53,8 +58,14 @@ class GameFragment : Fragment() {
                 false
         )
 
-        resetList()
-        nextWord()
+        if (savedInstanceState != null) {
+            word = savedInstanceState.getString(KEY_WORD)
+            score = savedInstanceState.getInt(KEY_SCORE)
+            wordList = savedInstanceState.getStringArray(KEY_WORD_LIST).toMutableList()
+        } else {
+            resetList()
+            nextWord()
+        }
 
         binding.correctButton.setOnClickListener { onCorrect() }
         binding.skipButton.setOnClickListener { onSkip() }
@@ -62,6 +73,13 @@ class GameFragment : Fragment() {
         updateWordText()
         return binding.root
 
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(KEY_WORD, word)
+        outState.putInt(KEY_SCORE, score)
+        outState.putStringArray(KEY_WORD_LIST, wordList.toTypedArray())
     }
 
     /**
@@ -119,7 +137,9 @@ class GameFragment : Fragment() {
     /** Methods for buttons presses **/
 
     private fun onSkip() {
-        score--
+        if (score > 0) {
+            score--
+        }
         nextWord()
     }
 
